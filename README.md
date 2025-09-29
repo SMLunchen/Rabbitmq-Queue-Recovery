@@ -4,17 +4,17 @@
 
 This tool enables the recovery of RabbitMQ messages directly from binary queue storage files. It's particularly useful for data restoration from backups (such as VMware/Veeam) or when dealing with corrupted RabbitMQ installations.
 Mainly this tool addresses the issue, when a queue thats not quorum gets emptied through a restart or crash. Rabbitmq will then flush all the data in the queue and you will see messages like:
+```
+2025-09-23 06:03:52.580396+00:00 [warning] <0.690.0> Queue name1 in vhost xzy dropped 0/0/0 persistent messages and 0 transient messages after unclean shutdown
 
-`2025-09-23 06:03:52.580396+00:00 [warning] <0.690.0> Queue name1 in vhost xzy dropped 0/0/0 persistent messages and 0 transient messages after unclean shutdown`
+2025-09-23 06:03:53.157576+00:00 [warning] <0.699.0> Queue name2 in vhost xzy dropped 0/0/0 persistent messages and 435670 transient messages after unclean shutdown
 
-`2025-09-23 06:03:53.157576+00:00 [warning] <0.699.0> Queue name2 in vhost xzy dropped 0/0/0 persistent messages and 435670 transient messages after unclean shutdown`
+2025-09-23 06:03:53.336337+00:00 [warning] <0.702.0> Queue name3 in vhost xzy dropped 0/0/0 persistent messages and 626079 transient messages after unclean shutdown
 
-`2025-09-23 06:03:53.336337+00:00 [warning] <0.702.0> Queue name3 in vhost xzy dropped 0/0/0 persistent messages and 626079 transient messages after unclean shutdown`
+2025-09-23 06:03:53.485631+00:00 [warning] <0.696.0> Queue name4 in vhost xzy dropped 0/0/0 persistent messages and 853336 transient messages after unclean shutdown
 
-`2025-09-23 06:03:53.485631+00:00 [warning] <0.696.0> Queue name4 in vhost xzy dropped 0/0/0 persistent messages and 853336 transient messages after unclean shutdown`
-
-`2025-09-23 06:03:53.926845+00:00 [warning] <0.693.0> Queue name5 in vhost xzy dropped 0/0/0 persistent messages and 1915087 transient messages after unclean shutdown`
-
+2025-09-23 06:03:53.926845+00:00 [warning] <0.693.0> Queue name5 in vhost xzy dropped 0/0/0 persistent messages and 1915087 transient messages after unclean shutdown
+```
 
 The tool identifies messages by detecting binary markers that indicate the beginning and end of message blocks, and then sends these messages to a functioning RabbitMQ server.
 You cannot copy the binary files just back, as rabbitmq will not pick them up. - Also there is no documented restore to get queue data back after such a situation. - For the future make sure, your queues are set to quorum.
